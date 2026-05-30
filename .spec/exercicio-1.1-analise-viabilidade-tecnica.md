@@ -72,36 +72,48 @@ O LLM recebe o resultado calculado, não a lógica. Múltiplas abas com nomes t�
 
 ## Estimativa de tokens da base
 
-| Fonte | Qtde | Tamanho médio | Palavras total | Tokens (~0,75 tokens/palavra) |
-|-------|------|---------------|----------------|-------------------------------|
-| PDFs SharePoint | 800 docs | 10 páginas × 250 palavras/página = 2.500 palavras | 2.000.000 | ~2.667.000 |
-| Wiki Confluence | 400 páginas | 1.500 palavras/página | 600.000 | ~800.000 |
-| Planilhas XLSX | 50 arquivos | 2.000 palavras/arquivo | 100.000 | ~133.000 |
-| **Total** | | | **2.700.000** | **~3.600.000 tokens** |
+A regra prática é: 1 token ≈ 0,75 palavras (ou 1 palavra ≈ 1,33 tokens).
+Documentos normativos e técnicos tendem a ser mais densos que texto corrido — estimativa conservadora: 500 palavras/página para PDFs.
 
-**Conclusão:** Base de ~3,6M tokens. O modelo não pode receber isso tudo de uma vez (GPT-4o tem 128K tokens de janela).
-Isso confirma que RAG é necessário — não existe "jogar tudo no contexto".
+| Fonte | Qtde | Tamanho médio | Palavras total | Tokens (÷ 0,75) | Com overhead (+30%) |
+|-------|------|---------------|----------------|-----------------|---------------------|
+| PDFs SharePoint | 800 docs | 10 páginas × 500 palavras/pág | 4.000.000 | ~5.333.000 | ~6.933.000 |
+| Wiki Confluence | 400 páginas | 1.500 palavras/pág | 600.000 | ~800.000 | ~1.040.000 |
+| Planilhas XLSX | 50 arquivos | 5.000 palavras/arquivo (tabelas convertidas para Markdown são verbosas) | 250.000 | ~333.000 | ~433.000 |
+| **Total** | | | **4.850.000** | **~6.466.000** | **~8.406.000 tokens** |
+
+**Overhead considerado (+30%):** reformatação de tabelas para Markdown, metadados por chunk
+(`source`, `section`, `doc_version`, `doc_date`), overlap entre chunks (~10%), e headers de seção repetidos.
+
+**Conclusão:** Base estimada em ~8–9M tokens. Mesmo o GPT-4o com 128K de janela só conseguiria
+processar menos de 2% da base em uma única chamada. RAG não é opcional — é a única arquitetura viável.
 
 ---
 
 ## Análise de orçamento de contexto por query
 
 Janela do GPT-4o: 128.000 tokens
+Tokens úteis por query: 128.000 − ~2.000 (overhead de API/system) = **~126.000 tokens disponíveis**
 
 | Parte do contexto | Tokens estimados | Tipo |
 |-------------------|-----------------|------|
 | System prompt + guardrails | ~350 | Estático |
-| Metadados do cliente (tier, histórico) | ~50 | Dinâmico |
-| Chunks recuperados (5 chunks × 500 tokens) | ~2.500 | Dinâmico |
+| Metadados do cliente (tier) | ~50 | Dinâmico |
+| Chunks recuperados (7 chunks × 500 tokens) | ~3.500 | Dinâmico |
 | Histórico de conversa (últimas 6 trocas) | ~600 | Dinâmico, crescente |
 | Pergunta do atendente | ~30 | Dinâmico |
-| **Total por query** | **~3.530** | |
+| **Total por query** | **~4.530** | |
 
-Com 128K de janela e ~3.530 tokens por query, há espaço confortável.
-Risco real: **context rot em conversas longas no Teams**. Se o histórico não for limitado,
-após 20+ trocas o prompt ultrapassa o orçamento e o modelo começa a ignorar chunks iniciais.
+**Quantos chunks cabem teoricamente?** 126.000 ÷ 500 tokens/chunk ≈ 252 chunks por query.
+Na prática, **5–10 chunks é o ideal**: mais do que isso adiciona ruído e activa o efeito
+*lost in the middle* — informação no meio de contextos longos é subprocessada pelo modelo.
+Escolha de **7 chunks** equilibra cobertura e precisão.
 
-**Mitigação:** Limitar histórico a últimas 6 trocas. Resumir histórico antigo se necessário.
+**Risco real: context rot em conversas longas no Teams.** Se o histórico de conversa crescer
+sem limite, após 20+ trocas ele sozinho pode consumir 10K+ tokens, comprimindo o espaço
+para os chunks e degradando a qualidade das respostas.
+
+**Mitigação:** Limitar histórico a últimas 6 trocas (~600 tokens). Resumir ou descartar trocas mais antigas.
 
 ---
 
