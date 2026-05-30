@@ -11,43 +11,58 @@ python test_pipeline.py  # roda os 5 testes
 
 ---
 
-## Resultados de retrieval (após rodar test_pipeline.py)
+## Resultados de retrieval (resultados reais do pipeline rodando)
 
-| Teste | Pergunta | Retrieval | Chunks recuperados (top 3) |
+| Teste | Pergunta | Retrieval | Chunks recuperados (score) |
 |-------|----------|-----------|---------------------------|
-| 1 | Prazo de devolução? | FULL | POL-001 §3.1, POL-001 §3.2, POL-001 §3.3 |
-| 2 | Posso devolver carga perigosa? | SOURCE_ONLY | POL-001 §3.5 (errou seção), POL-001 §3.1, FAQ-03 |
-| 3 | SLA do cliente Gold? | SOURCE_ONLY | SLA-2024 §1, SLA-2024 §4, SLA-2024 §2 |
-| 4 | Frete 600kg para Manaus? | FULL | PROC-042v2 §2.1, PROC-042v2 §2, PROC-042v2 §3 |
-| 5 | SLA do cliente Platinum? | FULL | SLA-2024 §1, FAQ-15, SLA-2024 §2 |
+| 1 | Prazo de devolução? | **FULL** | POL-001 §3.1 (0.638), PROC-042-v2 §3 (0.554) |
+| 2 | Posso devolver carga perigosa? | SOURCE_ONLY | FAQ item 3 (0.567), PROC-042-v2 §4 (0.464), POL-001 §3.5 (0.449) |
+| 3 | SLA do cliente Gold? | SOURCE_ONLY | FAQ item 41 (0.479), SLA-2024 §5 (0.440) |
+| 4 | Frete 600kg para Manaus? | **FULL** | PROC-042-v2 §2 (0.472) |
+| 5 | SLA do cliente Platinum? | **FULL** | FAQ item 15 (0.675), SLA-2024 intro (0.480), PROC-042-v2 intro (0.400) |
 
 **Resultado geral: 3/5 FULL, 2/5 SOURCE_ONLY**
 
 ---
 
-## Problemas identificados
+## Problemas identificados (derivados dos testes reais)
 
-### Problema 1 — Teste 2: Seção errada para carga perigosa
-A query "posso devolver carga perigosa?" recuperou §3.5 (custos) em vez de §3.2 (exceções).
-Semanticamente, "devolver carga perigosa" está mais próximo de "custos de devolução" do que
-de "exceções ao prazo", porque §3.5 usa a palavra "devolução" mais frequentemente.
+### Problema 1 — Teste 2: FAQ informal aparece antes do documento oficial
 
-**Causa raiz:** Mismatch semântico — a proibição está em §3.2 ("NÃO são elegíveis") mas a
-pergunta usa "posso devolver", que é mais similar a §3.5 em embedding space.
+A query "posso devolver carga perigosa?" trouxe como chunk mais relevante o **FAQ item 3**
+(score 0.567) — documento informal, não validado por Compliance — em vez da **POL-001 §3.2**
+(a seção que contém a proibição oficial). O POL-001 apareceu, mas na seção §3.5 (custos),
+não na §3.2 (exceções).
 
-**Proposta de correção:** HyDE (Hypothetical Document Embeddings) — gerar um documento
-hipotético de resposta antes de buscar. Em vez de buscar "posso devolver carga perigosa?",
-buscar "cargas perigosas não são elegíveis para devolução" (resposta hipotética).
+**Causa raiz:** O FAQ item 3 contém exatamente a frase "pode devolver carga perigosa" no
+enunciado da pergunta, criando alta similaridade superficial. A POL-001 §3.2 usa
+"NÃO são elegíveis" — semanticamente correto mas lexicalmente distante da query.
 
-### Problema 2 — Teste 3: SLA do Gold — seção de classificação aparece antes da tabela
-O retrieval retornou SLA §1 (classificação de clientes) com score maior que §2 (tabela de SLAs).
-O §1 contém a palavra "Gold" várias vezes (definição do tier), então tem alta similaridade.
-O §2 (que tem os valores reais) aparece em terceiro lugar.
+**Risco real:** O LLM vai receber o FAQ (fonte informal) como chunk mais relevante e pode
+basear a resposta nele, que diz "na prática orienta o cliente a ligar no ramal 4500 e já
+tiveram casos de exceção" — uma resposta ambígua e potencialmente perigosa.
 
-**Causa raiz:** Frequência de termo supera relevância semântica real.
+**Proposta de correção:** HyDE (Hypothetical Document Embeddings) — transformar a query
+em uma resposta hipotética antes de buscar. Em vez de buscar "posso devolver carga perigosa?",
+gerar "cargas perigosas classes 1-6 ANTT não são elegíveis para devolução pelo processo padrão"
+e usar esse texto como query de embedding. Isso aproxima a busca do vocabulário do documento.
+
+### Problema 2 — Teste 3: SLA Gold recupera seção de medição em vez da tabela
+
+A query "qual o SLA do cliente Gold?" trouxe **FAQ item 41** (score 0.479) e **SLA-2024 §5**
+(medição e reportes, score 0.440), mas não trouxe a **SLA-2024 §2** (a tabela de SLAs com os
+valores reais: 2h resposta, 24h resolução).
+
+**Causa raiz:** O FAQ item 41 menciona explicitamente "Gold tem 2h de resposta e 24h de
+resolução" — mais semelhante à query do que a tabela formal. A §2 é uma tabela Markdown com
+muitas colunas e o embedding não captura bem que ela contém os valores do Gold.
+
+**Risco real:** O LLM vai responder com base no FAQ (informal) e na seção de medição, podendo
+omitir o SLA de incidentes críticos (30min/4h) que só está na tabela formal.
 
 **Proposta de correção:** Re-ranking com cross-encoder após o retrieval inicial. O cross-encoder
-avalia pares (query, chunk) e reordena com mais precisão que o embedding de similaridade.
+avalia pares (query, chunk) com mais precisão que similaridade de embeddings sozinha, e
+tende a priorizar chunks que contêm os valores numéricos pedidos.
 
 ---
 

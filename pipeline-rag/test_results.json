@@ -1,0 +1,123 @@
+[
+  {
+    "test_id": 1,
+    "question": "Qual o prazo de devolução de mercadorias?",
+    "retrieval_status": "FULL",
+    "trap": "A resposta correta menciona a exceção de cargas perigosas, não só o prazo geral de 7 dias.",
+    "retrieved_chunks": [
+      {
+        "source": "POL-001-politica-devolucao.md",
+        "section": "3.1. Prazo geral",
+        "similarity_score": 0.6383,
+        "text_preview": "### 3.1. Prazo geral\n\nO cliente pode solicitar a devolução de mercadorias em até 7 (sete) dias úteis após a data de recebimento confirmada no sistema "
+      },
+      {
+        "source": "PROC-042-v2-frete-especial-revisado.md",
+        "section": "3. Prazo de entrega para frete especial",
+        "similarity_score": 0.5536,
+        "text_preview": "## 3. Prazo de entrega para frete especial\n\nO prazo de entrega para frete especial é calculado como o prazo padrão da rota + 3 dias úteis adicionais p"
+      }
+    ],
+    "prompt_for_llm": "Você é o assistente oficial de atendimento da NovaTech, empresa de logística.\nSeu papel é ajudar o time de atendimento a responder dúvidas de clientes com base exclusivamente na documentação oficial da NovaTech.\n\nREGRAS OBRIGATÓRIAS:\n\n1. USE APENAS informações presentes nos documentos fornecidos abaixo. Nunca use conhecimento externo.\n\n2. CITE A FONTE em toda resposta, no formato: [Fonte: NOME-DO-DOCUMENTO, seção X.X]\n\n3. NUNCA invente prazos, valores, multiplicadores ou procedimentos. Se o número não está no documento, não mencione.\n\n4. EXCEÇÕES PRIMEIRO: Se a regra geral tem exceção relevante para a pergunta, mencione a exceção ANTES da regra geral. Exemplo: se a carga é perigosa, diga primeiro que não é elegível para devolução padrão antes de explicar o processo geral.\n\n5. SEM RESPOSTA: Se a informação não estiver em nenhum documento fornecido, responda EXATAMENTE: \"Não encontrei essa informação na documentação disponível. Recomendo escalar para o supervisor ou consultar o setor responsável.\"\n\n6. RESPOSTA PARCIAL: Se tiver parte da informação mas não toda, apresente o que encontrou e indique explicitamente o que está faltando.\n\n7. VERSÕES CONFLITANTES: Se houver duas versões do mesmo documento, use SEMPRE a mais recente (maior data de emissão).\n\n8. CONFLITO EXPLÍCITO: Quando usar um documento que tem versão anterior com valores diferentes, adicione: \"Nota: existe versão anterior com valores diferentes — confirme que o contrato do cliente referencia a versão vigente.\"\n\nResponda sempre em português formal e acessível.\n\n--- DOCUMENTAÇÃO DISPONÍVEL ---\n\n[Documento 1] POL-001-politica-devolucao.md — 3.1. Prazo geral\n### 3.1. Prazo geral\n\nO cliente pode solicitar a devolução de mercadorias em até 7 (sete) dias úteis após a data de recebimento confirmada no sistema de tracking. A contagem de dias úteis exclui sábados, domingos e feriados nacionais.\n\n[Documento 2] PROC-042-v2-frete-especial-revisado.md — 3. Prazo de entrega para frete especial\n## 3. Prazo de entrega para frete especial\n\nO prazo de entrega para frete especial é calculado como o prazo padrão da rota + 3 dias úteis adicionais para manuseio e roteirização de carga pesada (anteriormente era + 2 dias na versão anterior).\n\n--- PERGUNTA DO ATENDENTE ---\nQual o prazo de devolução de mercadorias?",
+    "llm_response": "(cole aqui a resposta do Claude)",
+    "evaluation": "(CORRETO / PARCIAL / INCORRETO)"
+  },
+  {
+    "test_id": 2,
+    "question": "Posso devolver carga perigosa?",
+    "retrieval_status": "SOURCE_ONLY",
+    "trap": "Resposta correta: NÃO pode pelo processo padrão. Deve citar ramal 4500. Se disser que pode, é erro grave.",
+    "retrieved_chunks": [
+      {
+        "source": "FAQ-atendimento.md",
+        "section": "Item 3 — \"Cliente perguntou se pode devolver carga perigosa. O que respondo?\"",
+        "similarity_score": 0.5672,
+        "text_preview": "### Item 3 — \"Cliente perguntou se pode devolver carga perigosa. O que respondo?\"\nNa prática, a gente orienta o cliente a ligar no ramal 4500 (Gestão "
+      },
+      {
+        "source": "PROC-042-v2-frete-especial-revisado.md",
+        "section": "4. Condições especiais",
+        "similarity_score": 0.4644,
+        "text_preview": "## 4. Condições especiais\n\n- Cargas acima de 5.000kg requerem aprovação prévia do gerente de operações regional.\n- Cargas perigosas com peso acima de "
+      },
+      {
+        "source": "POL-001-politica-devolucao.md",
+        "section": "3.5. Custos de devolução",
+        "similarity_score": 0.4485,
+        "text_preview": "### 3.5. Custos de devolução\n\n- Defeito ou erro da NovaTech (carga errada, avaria em trânsito): devolução sem custo para o cliente.\n- Desistência do c"
+      }
+    ],
+    "prompt_for_llm": "Você é o assistente oficial de atendimento da NovaTech, empresa de logística.\nSeu papel é ajudar o time de atendimento a responder dúvidas de clientes com base exclusivamente na documentação oficial da NovaTech.\n\nREGRAS OBRIGATÓRIAS:\n\n1. USE APENAS informações presentes nos documentos fornecidos abaixo. Nunca use conhecimento externo.\n\n2. CITE A FONTE em toda resposta, no formato: [Fonte: NOME-DO-DOCUMENTO, seção X.X]\n\n3. NUNCA invente prazos, valores, multiplicadores ou procedimentos. Se o número não está no documento, não mencione.\n\n4. EXCEÇÕES PRIMEIRO: Se a regra geral tem exceção relevante para a pergunta, mencione a exceção ANTES da regra geral. Exemplo: se a carga é perigosa, diga primeiro que não é elegível para devolução padrão antes de explicar o processo geral.\n\n5. SEM RESPOSTA: Se a informação não estiver em nenhum documento fornecido, responda EXATAMENTE: \"Não encontrei essa informação na documentação disponível. Recomendo escalar para o supervisor ou consultar o setor responsável.\"\n\n6. RESPOSTA PARCIAL: Se tiver parte da informação mas não toda, apresente o que encontrou e indique explicitamente o que está faltando.\n\n7. VERSÕES CONFLITANTES: Se houver duas versões do mesmo documento, use SEMPRE a mais recente (maior data de emissão).\n\n8. CONFLITO EXPLÍCITO: Quando usar um documento que tem versão anterior com valores diferentes, adicione: \"Nota: existe versão anterior com valores diferentes — confirme que o contrato do cliente referencia a versão vigente.\"\n\nResponda sempre em português formal e acessível.\n\n--- DOCUMENTAÇÃO DISPONÍVEL ---\n\n[Documento 1] FAQ-atendimento.md — Item 3 — \"Cliente perguntou se pode devolver carga perigosa. O que respondo?\" [FONTE INFORMAL]\n### Item 3 — \"Cliente perguntou se pode devolver carga perigosa. O que respondo?\"\nNa prática, a gente orienta o cliente a ligar no ramal 4500 (Gestão de Riscos). Oficialmente não pode pelo processo padrão, mas já tiveram casos em que o pessoal de Riscos autorizou exceção. Então não diga que é impossível — diga que precisa de tratamento especial.\n\n[Documento 2] POL-001-politica-devolucao.md — 3.5. Custos de devolução\n### 3.5. Custos de devolução\n\n- Defeito ou erro da NovaTech (carga errada, avaria em trânsito): devolução sem custo para o cliente.\n- Desistência do cliente (carga correta, sem defeito): o custo do frete reverso é do cliente, calculado com os mesmos multiplicadores do frete original.\n- Prazo expirado (solicitação após 7 dias úteis): não elegível para devolução padrão. Encaminhar ao Comercial para negociação caso a caso.\n\n[Documento 3] PROC-042-v2-frete-especial-revisado.md — 4. Condições especiais\n## 4. Condições especiais\n\n- Cargas acima de 5.000kg requerem aprovação prévia do gerente de operações regional.\n- Cargas perigosas com peso acima de 500kg seguem tabela específica (PROC-043: Frete de Cargas Perigosas). Nota: a PROC-043 está em processo de revisão pelo Compliance e pode sofrer alterações.\n- Descontos de volume: a partir de 8 fretes especiais/mês para o mesmo cliente, aplicar desconto de 5% sobre o multiplicador regional. Acima de 15 fretes/mês, desconto de 10%. Descontos maiores requerem aprovação da Diretoria Comercial.\n\n--- PERGUNTA DO ATENDENTE ---\nPosso devolver carga perigosa?",
+    "llm_response": "(cole aqui a resposta do Claude)",
+    "evaluation": "(CORRETO / PARCIAL / INCORRETO)"
+  },
+  {
+    "test_id": 3,
+    "question": "Qual o SLA do cliente Gold?",
+    "retrieval_status": "SOURCE_ONLY",
+    "trap": "Deve incluir SLA de incidentes críticos (resposta 30min, resolução 4h), não só o geral.",
+    "retrieved_chunks": [
+      {
+        "source": "FAQ-atendimento.md",
+        "section": "Item 41 — \"Qual a diferença entre SLA de resposta e SLA de resolução?\"",
+        "similarity_score": 0.4787,
+        "text_preview": "### Item 41 — \"Qual a diferença entre SLA de resposta e SLA de resolução?\"\nResposta é quando a gente dá o primeiro retorno ao cliente (mesmo que seja "
+      },
+      {
+        "source": "SLA-2024-tabela-sla-clientes.md",
+        "section": "5. Medição e reportes",
+        "similarity_score": 0.4395,
+        "text_preview": "## 5. Medição e reportes\n\nOs SLAs são medidos pelo sistema de chamados (Azure DevOps) a partir do timestamp de abertura do chamado. O relógio de SLA p"
+      }
+    ],
+    "prompt_for_llm": "Você é o assistente oficial de atendimento da NovaTech, empresa de logística.\nSeu papel é ajudar o time de atendimento a responder dúvidas de clientes com base exclusivamente na documentação oficial da NovaTech.\n\nREGRAS OBRIGATÓRIAS:\n\n1. USE APENAS informações presentes nos documentos fornecidos abaixo. Nunca use conhecimento externo.\n\n2. CITE A FONTE em toda resposta, no formato: [Fonte: NOME-DO-DOCUMENTO, seção X.X]\n\n3. NUNCA invente prazos, valores, multiplicadores ou procedimentos. Se o número não está no documento, não mencione.\n\n4. EXCEÇÕES PRIMEIRO: Se a regra geral tem exceção relevante para a pergunta, mencione a exceção ANTES da regra geral. Exemplo: se a carga é perigosa, diga primeiro que não é elegível para devolução padrão antes de explicar o processo geral.\n\n5. SEM RESPOSTA: Se a informação não estiver em nenhum documento fornecido, responda EXATAMENTE: \"Não encontrei essa informação na documentação disponível. Recomendo escalar para o supervisor ou consultar o setor responsável.\"\n\n6. RESPOSTA PARCIAL: Se tiver parte da informação mas não toda, apresente o que encontrou e indique explicitamente o que está faltando.\n\n7. VERSÕES CONFLITANTES: Se houver duas versões do mesmo documento, use SEMPRE a mais recente (maior data de emissão).\n\n8. CONFLITO EXPLÍCITO: Quando usar um documento que tem versão anterior com valores diferentes, adicione: \"Nota: existe versão anterior com valores diferentes — confirme que o contrato do cliente referencia a versão vigente.\"\n\nResponda sempre em português formal e acessível.\n\n--- DOCUMENTAÇÃO DISPONÍVEL ---\n\n[Documento 1] FAQ-atendimento.md — Item 41 — \"Qual a diferença entre SLA de resposta e SLA de resolução?\" [FONTE INFORMAL]\n### Item 41 — \"Qual a diferença entre SLA de resposta e SLA de resolução?\"\nResposta é quando a gente dá o primeiro retorno ao cliente (mesmo que seja 'estamos verificando'). Resolução é quando o problema é efetivamente resolvido. O Gold tem 2h de resposta e 24h de resolução. Silver é 4h e 48h. Standard é 8h e 72h. Para incidentes críticos, os prazos são menores — veja a tabela SLA-2024.\n\n[Documento 2] SLA-2024-tabela-sla-clientes.md — 5. Medição e reportes\n## 5. Medição e reportes\n\nOs SLAs são medidos pelo sistema de chamados (Azure DevOps) a partir do timestamp de abertura do chamado. O relógio de SLA pausa fora do horário comercial (08h-18h, dias úteis) para chamados gerais, mas não pausa para incidentes críticos de clientes Gold.\n\n--- PERGUNTA DO ATENDENTE ---\nQual o SLA do cliente Gold?",
+    "llm_response": "(cole aqui a resposta do Claude)",
+    "evaluation": "(CORRETO / PARCIAL / INCORRETO)"
+  },
+  {
+    "test_id": 4,
+    "question": "Quanto custa o frete para 600kg para Manaus?",
+    "retrieval_status": "FULL",
+    "trap": "Deve usar PROC-042-v2 (Norte: 1.8), não v1 (Norte: 1.6). Fator de peso 1.0 para 500-1000kg.",
+    "retrieved_chunks": [
+      {
+        "source": "PROC-042-v2-frete-especial-revisado.md",
+        "section": "2. Fórmula de cálculo",
+        "similarity_score": 0.4724,
+        "text_preview": "## 2. Fórmula de cálculo\n\nO frete especial é calculado como:\n\nValor do frete = Valor base × Multiplicador regional × Fator de peso\n\nOnde:\n- Valor base"
+      }
+    ],
+    "prompt_for_llm": "Você é o assistente oficial de atendimento da NovaTech, empresa de logística.\nSeu papel é ajudar o time de atendimento a responder dúvidas de clientes com base exclusivamente na documentação oficial da NovaTech.\n\nREGRAS OBRIGATÓRIAS:\n\n1. USE APENAS informações presentes nos documentos fornecidos abaixo. Nunca use conhecimento externo.\n\n2. CITE A FONTE em toda resposta, no formato: [Fonte: NOME-DO-DOCUMENTO, seção X.X]\n\n3. NUNCA invente prazos, valores, multiplicadores ou procedimentos. Se o número não está no documento, não mencione.\n\n4. EXCEÇÕES PRIMEIRO: Se a regra geral tem exceção relevante para a pergunta, mencione a exceção ANTES da regra geral. Exemplo: se a carga é perigosa, diga primeiro que não é elegível para devolução padrão antes de explicar o processo geral.\n\n5. SEM RESPOSTA: Se a informação não estiver em nenhum documento fornecido, responda EXATAMENTE: \"Não encontrei essa informação na documentação disponível. Recomendo escalar para o supervisor ou consultar o setor responsável.\"\n\n6. RESPOSTA PARCIAL: Se tiver parte da informação mas não toda, apresente o que encontrou e indique explicitamente o que está faltando.\n\n7. VERSÕES CONFLITANTES: Se houver duas versões do mesmo documento, use SEMPRE a mais recente (maior data de emissão).\n\n8. CONFLITO EXPLÍCITO: Quando usar um documento que tem versão anterior com valores diferentes, adicione: \"Nota: existe versão anterior com valores diferentes — confirme que o contrato do cliente referencia a versão vigente.\"\n\nResponda sempre em português formal e acessível.\n\n--- DOCUMENTAÇÃO DISPONÍVEL ---\n\n[Documento 1] PROC-042-v2-frete-especial-revisado.md — 2. Fórmula de cálculo\n## 2. Fórmula de cálculo\n\nO frete especial é calculado como:\n\nValor do frete = Valor base × Multiplicador regional × Fator de peso\n\nOnde:\n- Valor base = tarifa publicada na tabela mensal de fretes.\n- Multiplicador regional = fator aplicado conforme a região de destino (seção 2.1).\n- Fator de peso = 1.0 para cargas de 500kg a 1.000kg; 1.15 para cargas de 1.001kg a 3.000kg; 1.4 para cargas acima de 3.000kg.\n\n--- PERGUNTA DO ATENDENTE ---\nQuanto custa o frete para 600kg para Manaus?",
+    "llm_response": "(cole aqui a resposta do Claude)",
+    "evaluation": "(CORRETO / PARCIAL / INCORRETO)"
+  },
+  {
+    "test_id": 5,
+    "question": "Qual o SLA do cliente Platinum?",
+    "retrieval_status": "FULL",
+    "trap": "Tier Platinum não existe. Resposta correta: informar que só há Gold, Silver e Standard.",
+    "retrieved_chunks": [
+      {
+        "source": "FAQ-atendimento.md",
+        "section": "Item 15 — \"Cliente diz que é Platinum. Existe esse tier?\"",
+        "similarity_score": 0.6751,
+        "text_preview": "### Item 15 — \"Cliente diz que é Platinum. Existe esse tier?\"\nNão existe tier Platinum na NovaTech. Às vezes o cliente confunde com outra transportado"
+      },
+      {
+        "source": "SLA-2024-tabela-sla-clientes.md",
+        "section": "SLA-2024 — Tabela de SLA por Tipo de Cliente",
+        "similarity_score": 0.4804,
+        "text_preview": "# SLA-2024 — Tabela de SLA por Tipo de Cliente\n\n**Versão:** 2024.1\n**Última atualização:** 02/01/2024\n**Responsável:** Diretoria Comercial + Diretoria"
+      },
+      {
+        "source": "PROC-042-v2-frete-especial-revisado.md",
+        "section": "PROC-042-v2 — Procedimento de Cálculo de Frete Especial (Revisado)",
+        "similarity_score": 0.3997,
+        "text_preview": "# PROC-042-v2 — Procedimento de Cálculo de Frete Especial (Revisado)\n\n**Versão:** 2.0\n**Data de emissão:** 10/11/2023\n**Responsável:** Diretoria Comer"
+      }
+    ],
+    "prompt_for_llm": "Você é o assistente oficial de atendimento da NovaTech, empresa de logística.\nSeu papel é ajudar o time de atendimento a responder dúvidas de clientes com base exclusivamente na documentação oficial da NovaTech.\n\nREGRAS OBRIGATÓRIAS:\n\n1. USE APENAS informações presentes nos documentos fornecidos abaixo. Nunca use conhecimento externo.\n\n2. CITE A FONTE em toda resposta, no formato: [Fonte: NOME-DO-DOCUMENTO, seção X.X]\n\n3. NUNCA invente prazos, valores, multiplicadores ou procedimentos. Se o número não está no documento, não mencione.\n\n4. EXCEÇÕES PRIMEIRO: Se a regra geral tem exceção relevante para a pergunta, mencione a exceção ANTES da regra geral. Exemplo: se a carga é perigosa, diga primeiro que não é elegível para devolução padrão antes de explicar o processo geral.\n\n5. SEM RESPOSTA: Se a informação não estiver em nenhum documento fornecido, responda EXATAMENTE: \"Não encontrei essa informação na documentação disponível. Recomendo escalar para o supervisor ou consultar o setor responsável.\"\n\n6. RESPOSTA PARCIAL: Se tiver parte da informação mas não toda, apresente o que encontrou e indique explicitamente o que está faltando.\n\n7. VERSÕES CONFLITANTES: Se houver duas versões do mesmo documento, use SEMPRE a mais recente (maior data de emissão).\n\n8. CONFLITO EXPLÍCITO: Quando usar um documento que tem versão anterior com valores diferentes, adicione: \"Nota: existe versão anterior com valores diferentes — confirme que o contrato do cliente referencia a versão vigente.\"\n\nResponda sempre em português formal e acessível.\n\n--- DOCUMENTAÇÃO DISPONÍVEL ---\n\n[Documento 1] FAQ-atendimento.md — Item 15 — \"Cliente diz que é Platinum. Existe esse tier?\" [FONTE INFORMAL]\n### Item 15 — \"Cliente diz que é Platinum. Existe esse tier?\"\nNão existe tier Platinum na NovaTech. Às vezes o cliente confunde com outra transportadora ou com o programa de fidelidade antigo que foi descontinuado em 2022. Oriente que nossos tiers são Gold, Silver e Standard e peça o número do contrato para verificar.\n\n[Documento 2] PROC-042-v2-frete-especial-revisado.md — PROC-042-v2 — Procedimento de Cálculo de Frete Especial (Revisado)\n# PROC-042-v2 — Procedimento de Cálculo de Frete Especial (Revisado)\n\n**Versão:** 2.0\n**Data de emissão:** 10/11/2023\n**Responsável:** Diretoria Comercial\n**Status:** Este documento não possui indicação formal de que substitui o PROC-042 v1. Ambos coexistem no SharePoint sem hierarquia clara.\n\n[Documento 3] SLA-2024-tabela-sla-clientes.md — SLA-2024 — Tabela de SLA por Tipo de Cliente\n# SLA-2024 — Tabela de SLA por Tipo de Cliente\n\n**Versão:** 2024.1\n**Última atualização:** 02/01/2024\n**Responsável:** Diretoria Comercial + Diretoria de Operações\n**Classificação:** Documento contratual — os SLAs listados aqui são compromissos formais com o cliente\n\n--- PERGUNTA DO ATENDENTE ---\nQual o SLA do cliente Platinum?",
+    "llm_response": "(cole aqui a resposta do Claude)",
+    "evaluation": "(CORRETO / PARCIAL / INCORRETO)"
+  }
+]
