@@ -56,3 +56,8 @@ python test_pipeline.py   # roda os 5 testes e gera test_results.json
 | 1.1 — Análise de viabilidade técnica | Documento com análise + iteração Claude | `.spec/exercicio-1.1-*.md` + `evidencias/ex-1.1-*.md` |
 | 1.2 — Prototipação de system prompt | Prompt v1, v2, testes comparativos | `.spec/exercicio-1.2-*.md` + `evidencias/ex-1.2-*.md` |
 | 1.3 — Pipeline de RAG funcional | Código Python + 5 testes com resultados | `pipeline-rag/` + `evidencias/ex-1.3-*.md` |
+
+## Cenário 2 — Estruturação do Trabalho
+
+Exercícios 2.1 (MCP servers), 2.2 (SDD + query endpoint) e 2.3 (Skills). Estrutura espelha o
+Anexo C do projeto `db1/novatech-assistant`. Detalhes em [`cenario-2/README.md`](cenario-2/README.md).

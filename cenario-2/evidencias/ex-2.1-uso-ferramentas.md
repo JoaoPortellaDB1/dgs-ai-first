@@ -1,55 +1,76 @@
 # Evidência — Exercício 2.1 (uso de ferramentas + iteração)
 
-**Ferramentas:** Claude (chat) para mapeamento e revisão crítica; geração do `.mcp/mcp.json`
-como artefato de código. *Nota de honestidade:* o `mcp.json` foi gerado e revisado em ambiente
-assistido por IA; para capturar evidência de **Copilot** especificamente, basta reabrir o
-`.mcp/mcp.json` no VS Code e pedir ao Copilot Chat "complete os servers Azure faltantes seguindo
-o exemplo do Anexo C" — o conteúdo abaixo já reflete o resultado refinado.
+**Ferramenta:** assistente de geração de código (Claude Code — mesmo tipo de agente que o Copilot).
+Fluxo: **gerar `.mcp.json` cru → avaliar (segurança) → refinar**.
 
 ---
 
-## Rodada 1 — mapeamento inicial (rascunho)
+## 1. Prompt de geração
 
-Prompt (resumo): *"Mapear os MCP servers do projeto NovaTech a partir do Anexo C e da lista de
-ferramentas (GitHub, Azure AI Search, Azure OpenAI, Azure DevOps, Confluence). Para cada um:
-tools/resources/prompts, quem consome, público ou custom."*
+> "Complete o `.mcp/mcp.json` a partir do exemplo mínimo do Anexo C (github + filesystem),
+> adicionando os servers do projeto NovaTech: Azure AI Search, Azure OpenAI, Azure DevOps e Confluence."
 
-Saída v1 (resumida) e **problemas que a auto-revisão pegou:**
+## 2. Geração crua (v1 — output direto, sem revisão de segurança)
 
-1. **AI Search com admin key.** A v1 configurava o server de AI Search com a chave de
-   administração ("porque é mais simples"). ❌ Viola least privilege — admin key permite
-   recriar/apagar índice. → **Corrigido:** trocado para **query key** + `MCP_READ_ONLY=true`.
+```json
+{
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": { "GITHUB_PERSONAL_ACCESS_TOKEN": "github_pat_abc123..." }
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "."]
+    },
+    "azure-ai-search": {
+      "command": "npx",
+      "args": ["-y", "@azure/mcp-ai-search"],
+      "env": { "AZURE_SEARCH_ADMIN_KEY": "xxxxx" }
+    },
+    "azure-openai": {
+      "command": "npx",
+      "args": ["-y", "@azure/mcp-openai"],
+      "env": { "AZURE_OPENAI_API_KEY": "xxxxx" }
+    },
+    "azure-devops": {
+      "command": "npx",
+      "args": ["-y", "@azure-devops/mcp"],
+      "env": { "AZURE_DEVOPS_PAT": "xxxxx" }
+    },
+    "confluence": {
+      "command": "npx",
+      "args": ["-y", "mcp-atlassian"],
+      "env": { "CONFLUENCE_API_TOKEN": "xxxxx" }
+    }
+  }
+}
+```
 
-2. **Filesystem apontando para `.` (raiz).** A v1 liberava o repo inteiro. ❌ Expõe `.env`,
-   `infra/` (Bicep de produção) e o próprio `.mcp/`. → **Corrigido:** restrito a
-   `./src ./specs ./skills ./prompts`.
+## 3. Avaliação crítica do v1 (revisão de segurança — "devil's advocate")
 
-3. **AI Search e OpenAI marcados como "públicos".** ❌ Não existem servers MCP oficiais para
-   AI Search / Azure OpenAI. → **Corrigido:** marcados como **custom (a construir)**, com
-   `command: node ./mcp-servers/.../dist/index.js`, o que também é critério do exercício
-   ("existe como público ou precisa ser construído?").
+| # | Problema no v1 | Por que é grave | Correção |
+|---|----------------|-----------------|----------|
+| 1 | Token literal (`github_pat_abc123...`) | Segredo commitado no repo → vazamento | Referência `${GITHUB_TOKEN}` (env) |
+| 2 | `filesystem` com `"."` (raiz) | Expõe `.env`, `infra/` (Bicep de prod), `.mcp/` | Restringir a `./src ./specs ./skills ./prompts` |
+| 3 | `AZURE_SEARCH_ADMIN_KEY` | Admin key deixa o agente recriar/apagar índice | **Query key** + `MCP_READ_ONLY=true` |
+| 4 | `@azure/mcp-ai-search` / `@azure/mcp-openai` | **Não existem** como pacotes públicos | Marcar como **custom (a construir)**: `node ./mcp-servers/.../dist/index.js` |
+| 5 | Confluence sem `READ_ONLY_MODE` nem filtro de space | Dado do cliente exposto e escrita habilitada | `READ_ONLY_MODE=true` + `CONFLUENCE_SPACES_FILTER=NOVATECH` |
+| 6 | Sem `type: "stdio"` | Formato incompleto vs. Anexo C | Adicionado em todos |
 
-4. **Tokens literais no JSON.** A v1 tinha placeholders com aparência de token real.
-   → **Corrigido:** tudo via `${ENV_VAR}`.
+## 4. Versão refinada (v2 — commitada)
 
-## Rodada 2 — revisão de segurança (Claude como devil's advocate)
+Ver [`../.mcp/mcp.json`](../.mcp/mcp.json). Diferença v1 → v2:
 
-Prompt (resumo): *"Aja como revisor de segurança. Que ataques esse mcp.json permite?"*
+| Item | v1 | v2 |
+|------|----|----|
+| Segredos | tokens literais | `${ENV_VAR}` em todos |
+| Filesystem | raiz `"."` | 4 pastas de trabalho |
+| AI Search | admin key | query key + read-only |
+| AI Search / OpenAI | pacotes públicos inexistentes | custom (`node ./mcp-servers/...`) |
+| Confluence | escrita liberada | read-only + filtro de space |
+| Least privilege | ausente | tabela de permissão por server (ver `.spec/exercicio-2.1`) |
 
-Contribuições incorporadas ao documento final:
-- **Prompt injection** em conteúdo recuperado (AI Search/Confluence) acionando tools de escrita
-  (GitHub/DevOps) → mantido gate humano nas tools de efeito colateral (risco 2).
-- **Confluence = dado do cliente** saindo para modelo cloud → `READ_ONLY_MODE` + filtro de space
-  + roteamento só para o Azure OpenAI do tenant (risco 1).
-
----
-
-## Diferença v1 → final (o que mudou de fato)
-
-| Item | v1 | Final |
-|------|----|-------|
-| AI Search | admin key | **query key** + read-only |
-| Filesystem | raiz do repo | 4 pastas de trabalho |
-| AI Search / OpenAI | "públicos" | **custom (a construir)** |
-| Segredos | placeholders | `${ENV_VAR}` |
-| Riscos | genéricos ("alguém pode invadir") | 3 riscos específicos com mitigação acionável |
+**Resultado:** `.mcp.json` válido (JSON parseado), coerente com o mapeamento, e endurecido por
+least privilege. As 3 análises de risco do documento principal saíram desta revisão.
