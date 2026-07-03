@@ -13,7 +13,7 @@ Estrutura de pastas espelha o Anexo C.
 |----|------|----------|
 | **2.1** | MCP servers + least privilege + riscos | [`.spec/exercicio-2.1-mcp-servers.md`](.spec/exercicio-2.1-mcp-servers.md), [`.mcp/mcp.json`](.mcp/mcp.json), [`evidencias/ex-2.1-uso-ferramentas.md`](evidencias/ex-2.1-uso-ferramentas.md) |
 | **2.2** | SDD: tasks + 1ª task implementada + revisão | [`specs/query-endpoint/tasks.md`](specs/query-endpoint/tasks.md), [`src/functions/query/`](src/functions/query/), [`evidencias/ex-2.2-revisao-critica.md`](evidencias/ex-2.2-revisao-critica.md) |
-| **2.3** | Estratégia de skills + SKILL.md Foundation | [`.spec/exercicio-2.3-arvore-skills.md`](.spec/exercicio-2.3-arvore-skills.md), [`skills/foundation/typescript-conventions.md`](skills/foundation/typescript-conventions.md) |
+| **2.3** | Estratégia de skills + SKILL.md Foundation | [`.spec/exercicio-2.3-arvore-skills.md`](.spec/exercicio-2.3-arvore-skills.md), [`skills/foundation/typescript-conventions.md`](skills/foundation/typescript-conventions.md), [`evidencias/ex-2.3-uso-ferramentas.md`](evidencias/ex-2.3-uso-ferramentas.md) |
 
 ## Rastreabilidade com o Cenário 1
 
