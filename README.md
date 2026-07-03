@@ -61,3 +61,8 @@ python test_pipeline.py   # roda os 5 testes e gera test_results.json
 
 Exercícios 2.1 (MCP servers), 2.2 (SDD + query endpoint) e 2.3 (Skills). Estrutura espelha o
 Anexo C do projeto `db1/novatech-assistant`. Detalhes em [`cenario-2/README.md`](cenario-2/README.md).
+
+## Cenário 3 — Governança e Validação
+
+Exercícios 3.1 (structured output + verificações determinísticas / harness de código) e 3.2
+(revisão crítica de código gerado por IA). Detalhes em [`cenario-3/README.md`](cenario-3/README.md).
