@@ -1,0 +1,75 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schema/mcp.json",
+  "mcpServers": {
+    "github": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}",
+        "GITHUB_TOOLSETS": "repos,pull_requests,issues"
+      }
+    },
+
+    "filesystem": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "./src",
+        "./specs",
+        "./skills",
+        "./prompts"
+      ]
+    },
+
+    "azure-ai-search": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["./mcp-servers/ai-search/dist/index.js"],
+      "env": {
+        "AZURE_SEARCH_ENDPOINT": "${AZURE_SEARCH_ENDPOINT}",
+        "AZURE_SEARCH_INDEX": "novatech-docs",
+        "AZURE_SEARCH_QUERY_KEY": "${AZURE_SEARCH_QUERY_KEY}",
+        "MCP_READ_ONLY": "true"
+      }
+    },
+
+    "azure-openai": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["./mcp-servers/openai/dist/index.js"],
+      "env": {
+        "AZURE_OPENAI_ENDPOINT": "${AZURE_OPENAI_ENDPOINT}",
+        "AZURE_OPENAI_DEPLOYMENT": "gpt-4o",
+        "AZURE_OPENAI_API_KEY": "${AZURE_OPENAI_API_KEY}",
+        "MCP_ALLOWED_OPERATIONS": "chat.completions,embeddings"
+      }
+    },
+
+    "azure-devops": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@azure-devops/mcp", "db1-novatech"],
+      "env": {
+        "AZURE_DEVOPS_PAT": "${AZDO_TOKEN}",
+        "AZURE_DEVOPS_DEFAULT_PROJECT": "novatech-assistant",
+        "MCP_ALLOWED_TOOLS": "wit_get_work_item,wit_list_work_items,wit_create_work_item,wit_update_work_item"
+      }
+    },
+
+    "confluence": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "mcp-atlassian"],
+      "env": {
+        "CONFLUENCE_URL": "${CONFLUENCE_URL}",
+        "CONFLUENCE_USERNAME": "${CONFLUENCE_USER}",
+        "CONFLUENCE_API_TOKEN": "${CONFLUENCE_TOKEN}",
+        "CONFLUENCE_SPACES_FILTER": "NOVATECH",
+        "READ_ONLY_MODE": "true"
+      }
+    }
+  }
+}
